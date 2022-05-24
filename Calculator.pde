@@ -115,7 +115,7 @@ class Calculator {
               displayString = displayString.substring(0, displayString.length() - 1);
             }
           } else if (this.b == 0) {
-            displayString = (a + "").substring(0, (a + "").indexOf(operation)-1);
+            displayString = (a + "").substring(0, displayString.indexOf(operation)-1);
             operation = 0;
           } else {
             if (Float.toString(this.b).length() <= 3) {
