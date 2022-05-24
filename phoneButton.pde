@@ -1,4 +1,4 @@
-class phoneButton {
+/*class phoneButton {
     private PImage icon;
     private int x, y, w, h;
 
@@ -64,4 +64,4 @@ class phoneButton {
       }
       return false;
     }
-  }
+  }*/
