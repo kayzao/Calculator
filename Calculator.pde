@@ -68,7 +68,7 @@ class Calculator {
             displayString+=input;
           } else if (this.b < max){
             this.b = this.b * 10 + Integer.parseInt(input);
-            if(displayString.substring(displayString.indexOf(operation) + 2) equals("0")){
+            if(displayString.substring(displayString.indexOf(operation) + 2).equals("0")){
               displayString = displayString.substring(displayString.indexOf(operation) + 1, displayString.length());
             } 
             displayString+=input;
@@ -127,13 +127,6 @@ class Calculator {
   }
 
   public void display() {
-    /*
-    String str = "";
-    if (a == 0) str = "0";
-    else if (operation == 0) str = a + "";
-    else if (b == 0) str = a + " " + operation + " 0";
-    else str = a + " " + operation + " " + b;
-    */
     fill(0);
     textAlign(RIGHT);
     textSize(displayTextSize);
