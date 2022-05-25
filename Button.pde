@@ -4,7 +4,7 @@ class Button {
   private color textColor, fillColor, borderColor;
   private boolean pressed;
   private final int buttonTextSize = 30;
-  private final int r = 10;
+  private final int r = 15;
 
   Button(int x, int y, int w, int h, String text) {
     this(x, y, w, h, text, color(255), color(150, 210, 255), color(50, 75, 90));

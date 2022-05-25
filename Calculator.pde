@@ -47,7 +47,7 @@ class Calculator {
     
     buttons = new Button[texts.length];
 
-    int padding = 5;
+    int padding = 7;
     int x = padding;
     int y = 150;
     int w = (width - 5 * padding) / 4;
