@@ -1,4 +1,4 @@
-color backgroundColor = color(150);
+color backgroundColor;
 boolean prevPressed;
 
 Calculator calculator;
@@ -7,6 +7,8 @@ void setup() {
   size(350, 500);
   textAlign(CENTER);
   textSize(30);
+  
+  backgroundColor = color(200);
 
   calculator = new Calculator();
   prevPressed = false;

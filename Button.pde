@@ -50,7 +50,7 @@ class Button {
     rect(x, y, w, h, r);
     if (mousePressed && mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h) {
       pressed = true;
-      fill(0, 0, 0, 50);
+      fill(255, 255, 255, 50);
       rect(x, y, w, h, r);
     } else {
       pressed = false;
