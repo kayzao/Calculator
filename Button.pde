@@ -1,4 +1,4 @@
-class Button {
+class CalcButton {
   private int x, y, w, h;
   private String text;
   private color textColor, fillColor, borderColor;
@@ -6,11 +6,11 @@ class Button {
   private final int buttonTextSize = 30;
   private final int r = 15;
 
-  Button(int x, int y, int w, int h, String text) {
+  CalcButton(int x, int y, int w, int h, String text) {
     this(x, y, w, h, text, color(255), color(150, 210, 255), color(50, 75, 90));
   }
 
-  Button(int x, int y, int w, int h, String text, color textColor, color fillColor, color borderColor) {
+  CalcButton(int x, int y, int w, int h, String text, color textColor, color fillColor, color borderColor) {
     this.x = x;
     this.y = y;
     this.w = w;
