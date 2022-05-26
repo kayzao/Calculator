@@ -7,7 +7,7 @@ void setup() {
   size(350, 500);
   textAlign(CENTER);
   textSize(30);
-  
+
   backgroundColor = color(200);
 
   calculator = new Calculator();

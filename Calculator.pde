@@ -4,13 +4,10 @@ class Calculator {
   private color[] palette;
 
   private boolean reset;
-  private float a, b;
+  private String a, b;
   private char operation;
 
-  private String displayString;
-
-
-  private CalcButton[] buttons;
+  private Button[] buttons;
   private final String[] texts = {
     "A/C",
     "7", "8", "9", "/",
@@ -20,10 +17,9 @@ class Calculator {
 
   public Calculator() {
     reset = false;
-    a = 0;
-    b = 0;
+    a = "0";
+    b = "0";
     operation = 0;
-    displayString = "0";
     limit = 10;
 
     /* 0 = keypad background color
@@ -45,7 +41,7 @@ class Calculator {
     palette[6] = #D2D1D5;
     palette[7] = #070D20;
 
-    buttons = new CalcButton[texts.length];
+    buttons = new Button[texts.length];
 
     int padding = 7;
     int x = padding;
@@ -54,7 +50,7 @@ class Calculator {
     int h = (height - y - 6 * padding) / 5;
 
     for (int i = 0; i < buttons.length; i++) {
-      buttons[i] = new CalcButton(x, y, w, h, texts[i]);
+      buttons[i] = new Button(x, y, w, h, texts[i]);
       if (texts[i].equals("=")) {
         buttons[i].setColors(palette[7], palette[5], palette[5]);
       } else if (texts[i].equals("A/C")) {
@@ -78,11 +74,11 @@ class Calculator {
     }
   }
 
-  public float getA() {
+  public String getA() {
     return a;
   }
 
-  public float getB() {
+  public String getB() {
     return b;
   }
 
@@ -90,97 +86,96 @@ class Calculator {
     return operation;
   }
 
+  private String displayString() {
+    if (a.length() > 2) {
+      if (a.indexOf(".0") == a.length()-2) {
+        a = a.substring(0, a.length()-2);
+      }
+    }
+
+    if (a.equals("Infinity")) {
+      a = "ERROR";
+      reset = true;
+      return "ERROR";
+    } else if (operation == 0) {
+      return a;
+    } else if (b.equals("0")) {
+      return a + " " + operation + " ";
+    } else {
+      return a + " " + operation + " " + b;
+    }
+  }
+
+  private void reset() {
+    a = "0";
+    b = "0";
+    operation = 0;
+    reset = false;
+  }
 
   void checkInput() {
-    for (CalcButton button : buttons) {
+    /* PLAN:
+     * Keep track of the two inputted numbers as Strings
+     * To calculate, just convert the strings to floats, and then do math
+     */
+    for (Button button : buttons) {
       if (button.getPressed()) {
         String input = button.getText();
-        //if the pressed button is a number, just add it
+        if (reset) reset();
+        //If input is number
         if (input.length() == 1 && (input.charAt(0) > 47 && input.charAt(0) < 58)) {
-          if (reset) {
-            a = 0;
-            b = 0;
-            operation = 0;
-            reset = false;
-            displayString = "0";
+          if (operation == 0 && a.length() < limit) { //if a is being edited
+            if (a.equals("0")) a = "";
+            a += input;
+          } else if (operation != 0 && b.length() < limit) { //else, b is being edited
+            if (b.equals("0")) b = "";
+            b += input;
           }
-          if (operation == 0 && a < pow(10, limit)) { //operation isn't set yet
-            a = a * 10 + Integer.parseInt(input);
-            if (displayString.equals("0")) displayString = "";
-            displayString+=input;
-          } else if (operation != 0 && b < pow(10, limit)) { //operation has been set, b may or may not be set
-            b = b * 10 + Integer.parseInt(input);
-            if (displayString.substring(displayString.indexOf(operation) + 2).equals("0")) {
-              displayString = displayString.substring(displayString.indexOf(operation) + 1, displayString.length());
-            } else displayString += Integer.parseInt(input);
-          }
-        } else if (input.equals("=")) { //else, if it was enter
-          if (operation == 0) return;
-          a = calculate(a, b, operation);
-          println(a);
-          b = 0;
-          operation = 0;
-          reset = true;
-          if (Float.toString(a).indexOf(".0") == Float.toString(a).length() - 2) {
-            displayString = Float.toString(a).substring(0, Float.toString(a).indexOf(".0"));
-          } else {
-            displayString = ("" + a);
-          }
-        } else if (input.equals("A/C")) { //else reset
-          a = 0;
-          b = 0;
-          operation = 0;
-          reset = false;
-          displayString = "0";
-          //else if operation is inputted and there isn't one already
-        } else if (a > 0 && b == 0 && (input.equals("/") || input.equals("*") || input.equals("-") || input.equals("+"))) {
-          reset = false;
+        } else if (input.equals("A/C")) {
+          reset();
+        } else if (input.equals("/") || input.equals("*") || input.equals("-") || input.equals("+")) {
+          if (a.equals("0")) return;
           operation = input.charAt(0);
-
-          if (displayString.length() > 3) {
-            char last = displayString.charAt(displayString.length()-2);
-            if (last == '/' || last == '*' || last == '-' || last == '+') {
-              displayString = displayString.substring(0, displayString.length() - 2) + input + " ";
-            } else {
-              displayString += " " + operation + " ";
-            }
-          } else {
-            displayString += " " + operation + " ";
-          }
-        } else if (button.getText().equals("<<<") && displayString.length() > 1) { //else if it was backspace
+        } else if (input.equals("<<<")) {
           if (operation == 0) {
-            if (Float.toString(a).indexOf('E') != -1) {
-              a = Float.parseFloat(Float.toString(a).substring(0, Float.toString(a).indexOf('E')));
-              displayString = displayString.substring(0, displayString.indexOf('E'));
+            if (a.length() > 1) {
+              a = a.substring(0, a.length() - 1);
             } else {
-              a = Float.parseFloat(Float.toString(a).substring(0, Float.toString(a).length() - 1));
-              displayString = displayString.substring(0, displayString.length() - 1);
+              a = "0";
             }
-          } else if (b == 0) {
-            displayString = (a + "").substring(0, displayString.indexOf(operation)-1);
+          } else if (b.equals("0")) {
             operation = 0;
           } else {
-            if (Float.toString(b).length() <= 3) {
-              b = 0;
-              displayString = displayString.substring(0, displayString.indexOf(operation) + 2) + "0";
+            if (b.length() > 1) {
+              b = b.substring(0, b.length() - 1);
             } else {
-              b = Float.parseFloat(Float.toString(b).substring(0, Float.toString(b).length() - 3));
-              displayString = displayString.substring(0, displayString.indexOf(operation) + 2) + b;
+              b = "0";
             }
           }
+        } else if (input.equals("=")) {
+          if (operation == 0 || b.equals("0")) return;
+          if (b.equals("0") && operation == 0) { //if divide by 0 error
+            a = "Infinity";
+          } else {
+            a = str(calculate(float(a), float(b), operation));
+          }
+          b = "0";
+          operation = 0;
         }
       }
     }
   }
 
-  private float calculate(float a, float b, char operation) {
-    //println("a: " + a + " b: " + b);
+  float calculate(float a, float b, char operation) {
     if (operation == '/') {
-      if (b != 0) return a / b;
-      else return 999999999;
-    } else if (operation == '*') return a * b;
-    else if (operation == '-') return a - b;
-    else return a + b;
+      return a / b;
+    } else if (operation == '*') {
+      return a * b;
+    } else if (operation == '-') {
+      return a - b;
+    } else {
+      return a + b;
+    }
   }
 
   public void display() {
@@ -197,7 +192,7 @@ class Calculator {
     fill(palette[6]);
     textAlign(RIGHT);
     textSize(displayTextSize);
-    text(displayString, width - 20, 50);
-    for (CalcButton b : buttons) b.display();
+    text(displayString(), width - 20, 50);
+    for (Button b : buttons) b.display();
   }
 }
